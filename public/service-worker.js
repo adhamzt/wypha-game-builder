@@ -1,5 +1,5 @@
-// Offline-first App-Shell Service Worker for WYPHA Game & Lesson Pack Builder (V43 PWA)
-const CACHE_NAME = 'wypha-pack-builder-pwa-v43-20261119';
+// Offline-first App-Shell Service Worker for WYPHA Game & Lesson Pack Builder (V44 PWA)
+const CACHE_NAME = 'wypha-pack-builder-pwa-v44-20261119';
 const SHELL_URLS = ['./', 'index.html', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png']
   .map(p => new URL(p, self.registration.scope).href);
 

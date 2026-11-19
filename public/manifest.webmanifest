@@ -1,8 +1,8 @@
 {
   "id": "./",
-  "name": "WYPHA Game & Lesson Pack Builder (V43 PWA)",
+  "name": "WYPHA Game & Lesson Pack Builder (V44 PWA)",
   "short_name": "WYPHA Builder",
-  "description": "Aplikasi PWA pembuat paket soal Edu-Game interaktif, mata pelajaran baru, dan Flashcard 3D (.ZIP) siap impor ke Microsite WYPHA V43.",
+  "description": "Aplikasi PWA pembuat paket soal Edu-Game interaktif, mata pelajaran baru, dan Flashcard 3D (.ZIP) siap impor ke Microsite WYPHA V44.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
