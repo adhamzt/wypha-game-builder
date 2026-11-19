@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#040915">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="WYPHA Builder">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<title>WYPHA Game &amp; Lesson Pack Builder (V41 Studio Pendamping)</title>
+<style>
+  :root {
+    --bg: #040915;
+    --panel: rgba(9, 20, 42, 0.92);
+    --card: rgba(13, 28, 58, 0.9);
+    --border: rgba(56, 189, 248, 0.34);
+    --ink: #f0f9ff;
+    --muted: #94a3b8;
+    --accent: #00d2ff;
+    --gold: #ffd460;
+    --green: #10b981;
+    --purple: #a855f7;
+    --danger: #ef4444;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    background:
+      radial-gradient(circle at 15% 10%, rgba(0, 210, 255, 0.14), transparent 36%),
+      radial-gradient(circle at 85% 15%, rgba(168, 85, 247, 0.16), transparent 38%),
+      var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 16px;
+  }
+  .wrap { max-width: 1120px; margin: 0 auto; display: grid; gap: 14px; }
+  header.hero {
+    background: linear-gradient(145deg, rgba(8, 22, 48, 0.96), rgba(22, 14, 52, 0.96));
+    border: 1.5px solid var(--border);
+    border-radius: 20px;
+    padding: 18px 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+  .hero h1 { margin: 0; font-size: clamp(18px, 3vw, 24px); color: #fff; }
+  .hero p { margin: 4px 0 0; font-size: 13px; color: #bae6fd; line-height: 1.45; }
+  .tabs { display: flex; flex-wrap: wrap; gap: 8px; }
+  .tab-btn {
+    border: 1.5px solid var(--border);
+    background: var(--panel);
+    color: #cbd5e1;
+    padding: 10px 16px;
+    border-radius: 12px;
+    font: 700 13px system-ui;
+    cursor: pointer;
+    transition: .18s ease;
+  }
+  .tab-btn.active {
+    background: linear-gradient(135deg, #0284c7, #2563eb);
+    border-color: #38bdf8;
+    color: #fff;
+    box-shadow: 0 0 18px rgba(0, 210, 255, 0.35);
+  }
+  .panel {
+    background: var(--panel);
+    border: 1.5px solid var(--border);
+    border-radius: 18px;
+    padding: 16px;
+    display: grid;
+    gap: 14px;
+  }
+  .panel.hidden { display: none; }
+  .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
+  label.field { display: grid; gap: 5px; font: 700 12px system-ui; color: #bae6fd; }
+  input[type="text"], input[type="number"], input[type="color"], select, textarea {
+    width: 100%;
+    padding: 9px 11px;
+    border-radius: 10px;
+    border: 1px solid rgba(110, 243, 255, 0.35);
+    background: #061226;
+    color: #fff;
+    font: 500 13px system-ui;
+  }
+  textarea { min-height: 82px; resize: vertical; font-family: ui-monospace, monospace; font-size: 12px; }
+  .btn {
+    border: 1px solid var(--border);
+    background: rgba(15, 32, 66, 0.9);
+    color: #e2e8f0;
+    padding: 9px 14px;
+    border-radius: 10px;
+    font: 700 12.5px system-ui;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    justify-content: center;
+  }
+  .btn.primary { background: linear-gradient(135deg, #0284c7, #2563eb); border-color: #38bdf8; color: #fff; }
+  .btn.gold { background: linear-gradient(135deg, #f59e0b, #d97706); border-color: #fbbf24; color: #081122; font-weight: 800; }
+  .btn.green { background: linear-gradient(135deg, #10b981, #059669); border-color: #34d399; color: #04130e; font-weight: 800; }
+  .btn.danger { background: rgba(239, 68, 68, 0.18); border-color: #ef4444; color: #fecaca; }
+  .subcard {
+    background: var(--card);
+    border: 1px solid rgba(148, 163, 184, 0.25);
+    border-radius: 14px;
+    padding: 13px;
+    display: grid;
+    gap: 10px;
+  }
+  .item-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: rgba(4, 12, 28, 0.85);
+    border: 1px solid rgba(56, 189, 248, 0.24);
+  }
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font: 700 11px system-ui;
+    background: rgba(0, 210, 255, 0.18);
+    border: 1px solid rgba(0, 210, 255, 0.4);
+    color: #9ef6ff;
+  }
+  .status-bar {
+    padding: 10px 14px;
+    border-radius: 12px;
+    background: rgba(16, 185, 129, 0.15);
+    border: 1px solid #34d399;
+    color: #a7f3d0;
+    font: 600 12.5px system-ui;
+  }
+  .status-bar.hidden { display: none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <div>
+      <h1>🧩 WYPHA Game &amp; Lesson Pack Builder (V41)</h1>
+      <p>Aplikasi mandiri pembuat Paket Soal Interaktif, Game Baru, Mata Pelajaran Baru &amp; Flashcard 3D (<code>.ZIP</code>) yang langsung menyatu dengan mekanik asli Microsite WYPHA V41.</p>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button type="button" class="btn green" id="installPwaBtn" hidden>📲 Install Aplikasi (PWA)</button>
+      <label class="btn" style="cursor:pointer">📂 Impor .ZIP / .JSON Lama<input type="file" id="importExistingPackInput" accept=".zip,.json" hidden></label>
+      <button type="button" class="btn danger" id="resetBuilderBtn">🗑️ Reset Draft</button>
+    </div>
+  </header>
+
+  <div id="globalStatus" class="status-bar hidden"></div>
+
+  <nav class="tabs" role="tablist">
+    <button type="button" class="tab-btn active" data-tab="edugame">🎮 1. Pembuat Edu-Game &amp; Soal Interaktif</button>
+    <button type="button" class="tab-btn" data-tab="flashcard">🧩 2. Pembuat Pelajaran Flashcard 3D</button>
+    <button type="button" class="tab-btn" data-tab="export">📦 3. Preview &amp; Ekspor .ZIP Siap Pakai</button>
+  </nav>
+
+  <!-- TAB 1: EDU-GAME & INTERACTIVE QUESTION BUILDER -->
+  <section id="tab-edugame" class="panel">
+    <div class="subcard">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+        <strong style="color:#ffd460;font-size:14px">⚙️ A. Target Game &amp; Mata Pelajaran</strong>
+        <button type="button" class="btn gold" id="loadSampleEngineBtn">✨ Muat Contoh Soal Sesuai Mesin</button>
+      </div>
+      <div class="grid-3">
+        <label class="field">Mode Target Paket
+          <select id="egTargetMode">
+            <option value="new_game">➕ Buat Game &amp; Pelajaran Baru (Muncul di Microsite)</option>
+            <option value="builtin_game">🔧 Tambah Soal ke Game Bawaan Microsite</option>
+          </select>
+        </label>
+        <label class="field">Jenis Mesin Mekanik Game (Engine Type)
+          <select id="egEngineType">
+            <option value="balance_scale">⚖️ Timbangan Angka (balance_scale)</option>
+            <option value="interactive_clock">🕒 Putar Jarum Jam (interactive_clock)</option>
+            <option value="cashier_tray">💳 Meja Kasir Uang (cashier_tray)</option>
+            <option value="drag_sequence">📋 Susun Urutan Langkah (drag_sequence)</option>
+            <option value="match_pairs">🔗 Cocokkan Pasangan (match_pairs)</option>
+            <option value="word_builder">🔤 Susun Huruf / Kata (word_builder)</option>
+            <option value="memory_flip">🃏 Kartu Memori Buka-Tutup (memory_flip)</option>
+            <option value="quiz_mcq">✅ Pilihan Ganda / Audio Arab (quiz_mcq)</option>
+            <option value="micro_plugin">🚀 Micro-Plugin HTML5/Canvas Kustom</option>
+          </select>
+        </label>
+        <label class="field" id="egBuiltinGameWrap" style="display:none">Pilih Game Bawaan
+          <select id="egBuiltinGameId">
+            <option value="balance_scale">⚖️ Timbangan Angka (balance_scale)</option>
+            <option value="interactive_clock">🕒 Jam Analog Interaktif (interactive_clock)</option>
+            <option value="cashier_tray">💳 Meja Kasir Rupiah (cashier_tray)</option>
+            <option value="math_rocket">🚀 Roket Berhitung (math_rocket)</option>
+            <option value="science_lab">🔬 Lab Sains Anak (science_lab)</option>
+            <option value="word_phonics">🔤 Susun Kata &amp; Fonik (word_phonics)</option>
+            <option value="hijaiyah_quest">🕋 Petualangan Hijaiyah (hijaiyah_quest)</option>
+          </select>
+        </label>
+      </div>
+
+      <div id="egNewGameFields" class="grid-3">
+        <label class="field">ID Game Unik (huruf kecil &amp; garis bawah)<input type="text" id="egNewGameId" value="timbangan_pecahan_v41"></label>
+        <label class="field">Judul Game (Indonesia)<input type="text" id="egNewGameTitleId" value="Timbangan Angka Pintar"></label>
+        <label class="field">Judul Game (English)<input type="text" id="egNewGameTitleEn" value="Smart Number Balance"></label>
+        <label class="field">Ikon Emoji<input type="text" id="egNewGameIcon" value="⚖️"></label>
+        <label class="field">Kategori Mata Pelajaran
+          <select id="egSubjectTab">
+            <option value="math_coding">🔢 Matematika &amp; Logika</option>
+            <option value="science">🔬 Sains &amp; Alam</option>
+            <option value="social_char">🌍 Sosial &amp; Karakter</option>
+            <option value="lang_art">🔤 Bahasa &amp; Seni</option>
+            <option value="mengaji_pai">🕌 Mengaji &amp; Ibadah (PAI)</option>
+            <option value="custom_subject">➕ Mata Pelajaran Baru (Otomatis Buat Tab!)</option>
+          </select>
+        </label>
+        <label class="field" id="egCustomSubjectWrap" style="display:none">Nama Mata Pelajaran Baru (Contoh: IPS &amp; Sejarah)<input type="text" id="egCustomSubjectLabel" placeholder="Misal: IPS & Sejarah"></label>
+      </div>
+    </div>
+
+    <!-- DYNAMIC FORM PER ENGINE TYPE -->
+    <div class="subcard">
+      <strong style="color:#8ef5ff;font-size:14px">📝 B. Isi Soal / Tantangan (Form Otomatis Menyesuaikan Mesin Game)</strong>
+      <div class="grid-2">
+        <label class="field">Level Usia
+          <select id="qLevel">
+            <option value="all">Semua Usia (Tampil di Semua Level)</option>
+            <option value="level1">Level 1 (PAUD / TK 3–5 Th)</option>
+            <option value="level2">Level 2 (SD Awal 6–8 Th)</option>
+            <option value="level3">Level 3 (SD Lanjut 9–12 Th)</option>
+          </select>
+        </label>
+        <label class="field">Instruksi / Pertanyaan Soal (ID)<input type="text" id="qPromptId" placeholder="Contoh: Seimbangkan timbangan atau urutkan langkah"></label>
+      </div>
+
+      <div id="dynamicEngineFormArea" class="grid-2"></div>
+
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button type="button" class="btn primary" id="addQuestionBtn">➕ Tambahkan Soal ke Daftar Paket</button>
+      </div>
+    </div>
+
+    <div class="subcard">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+        <strong style="color:#a7f3d0">📋 Daftar Soal Edu-Game dalam Paket (<span id="egQuestionsCount">0</span> Soal)</strong>
+      </div>
+      <div id="egQuestionsList" style="display:grid;gap:8px"></div>
+    </div>
+  </section>
+
+  <!-- TAB 2: FLASHCARD 3D LESSON BUILDER -->
+  <section id="tab-flashcard" class="panel hidden">
+    <div class="subcard">
+      <strong style="color:#ffd460;font-size:14px">🧩 A. Informasi Pelajaran Flashcard 3D</strong>
+      <div class="grid-3">
+        <label class="field">ID Pelajaran Unik<input type="text" id="fcDeckId" value="fc_mandarin_dasar"></label>
+        <label class="field">Judul Pelajaran (ID)<input type="text" id="fcTitleId" value="10 Kosakata Dasar Bahasa Asing"></label>
+        <label class="field">Judul Pelajaran (EN)<input type="text" id="fcTitleEn" value="10 Basic Vocabulary Flashcards"></label>
+        <label class="field">Ikon Pelajaran<input type="text" id="fcIcon" value="🏮"></label>
+        <label class="field">Kategori Pelajaran
+          <select id="fcSubjectTab">
+            <option value="bahasa_baca">🔤 Baca &amp; Bahasa</option>
+            <option value="angka_logika">🔢 Angka &amp; Logika</option>
+            <option value="dunia_sains">🌍 Hewan, Buah &amp; Sains</option>
+            <option value="mengaji_doa">🕌 Mengaji &amp; Doa</option>
+            <option value="custom_fc_tab">➕ Kategori Pelajaran Baru (Otomatis Tab Baru)</option>
+          </select>
+        </label>
+        <label class="field" id="fcCustomTabWrap" style="display:none">Nama Kategori Baru<input type="text" id="fcCustomTabLabel" placeholder="Misal: Bahasa Mandarin"></label>
+      </div>
+    </div>
+
+    <div class="subcard">
+      <strong style="color:#8ef5ff;font-size:14px">🃏 B. Tambah Kartu Flashcard (Suara Native ID / EN / AR Otomatis Terpisah)</strong>
+      <div class="grid-3">
+        <label class="field">Simbol / Huruf Kiri<input type="text" id="fcCardSymbol" placeholder="Contoh: A a / أَ / 🍎"></label>
+        <label class="field">Ikon / Gambar Kanan<input type="text" id="fcCardVisual" placeholder="Contoh: 🍎"></label>
+        <label class="field">Pemenggalan / Cara Baca<input type="text" id="fcCardSyllable" placeholder="Contoh: A - pel"></label>
+        <label class="field">Kata Bahasa Indonesia<input type="text" id="fcCardWordId" placeholder="Contoh: APEL"></label>
+        <label class="field">Kata Bahasa Inggris (Native EN)<input type="text" id="fcCardWordEn" placeholder="Contoh: APPLE"></label>
+        <label class="field">Teks Arab Berharakat (Opsional Native AR)<input type="text" id="fcCardSpeechAr" placeholder="Contoh: تُفَّاحَةٌ"></label>
+      </div>
+      <div class="grid-2">
+        <label class="field">Kalimat Contoh (Indonesia)<input type="text" id="fcCardExId" placeholder="Contoh: Ini buah apel merah yang manis."></label>
+        <label class="field">Kalimat Contoh (Native English)<input type="text" id="fcCardExEn" placeholder="Contoh: This is a sweet red apple."></label>
+      </div>
+      <div>
+        <button type="button" class="btn primary" id="addFcCardBtn">➕ Tambahkan Kartu ke Pelajaran</button>
+      </div>
+    </div>
+
+    <div class="subcard">
+      <strong style="color:#a7f3d0">🃏 Daftar Kartu Flashcard dalam Paket (<span id="fcCardsCount">0</span> Kartu)</strong>
+      <div id="fcCardsList" style="display:grid;gap:8px"></div>
+    </div>
+  </section>
+
+  <!-- TAB 3: EXPORT .ZIP & JSON PREVIEW -->
+  <section id="tab-export" class="panel hidden">
+    <div class="subcard">
+      <strong style="color:#ffd460;font-size:14px">📦 Pengaturan Paket .ZIP Siap Impor ke Microsite WYPHA V41</strong>
+      <div class="grid-2">
+        <label class="field">Nama Paket / Judul Produk DLC<input type="text" id="packTitleInput" value="Paket Ekspansi Edu-Game Interaktif WYPHA V41"></label>
+        <label class="field">Jenis Paket Ekspor
+          <select id="exportTypeSelect">
+            <option value="edugame">🎮 Paket Edu-Game &amp; Soal Interaktif (.ZIP)</option>
+            <option value="flashcard">🧩 Paket Pelajaran Flashcard 3D (.ZIP)</option>
+          </select>
+        </label>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button type="button" class="btn green" id="downloadZipBtn">⬇️ Download Paket .ZIP (Siap Impor ke Microsite)</button>
+        <button type="button" class="btn primary" id="downloadJsonBtn">📄 Download File .JSON</button>
+      </div>
+    </div>
+    <div class="subcard">
+      <strong style="color:#9ef6ff">🔍 Preview Struktur JSON Paket</strong>
+      <textarea id="jsonPreviewBox" readonly style="min-height:240px"></textarea>
+    </div>
+  </section>
+</div>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const STORAGE_KEY = 'wypha_pack_builder_v41_draft';
+
+  let state = {
+    questions: [],
+    fcCards: []
+  };
+
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const p = JSON.parse(saved);
+      if (p && Array.isArray(p.questions)) state.questions = p.questions;
+      if (p && Array.isArray(p.fcCards)) state.fcCards = p.fcCards;
+    }
+  } catch (e) {}
+
+  const saveDraft = () => {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+    refreshPreview();
+  };
+
+  const showStatus = msg => {
+    const el = $('globalStatus');
+    el.textContent = msg;
+    el.classList.remove('hidden');
+    setTimeout(() => el.classList.add('hidden'), 5000);
+  };
+
+  // Tab switcher
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.onclick = () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const target = btn.getAttribute('data-tab');
+      ['edugame', 'flashcard', 'export'].forEach(t => {
+        $('tab-' + t).classList.toggle('hidden', t !== target);
+      });
+      if (target === 'export') refreshPreview();
+    };
+  });
+
+  $('egTargetMode').onchange = () => {
+    const isNew = $('egTargetMode').value === 'new_game';
+    $('egNewGameFields').style.display = isNew ? 'grid' : 'none';
+    $('egBuiltinGameWrap').style.display = isNew ? 'none' : 'grid';
+  };
+  $('egSubjectTab').onchange = () => {
+    $('egCustomSubjectWrap').style.display = $('egSubjectTab').value === 'custom_subject' ? 'grid' : 'none';
+  };
+  $('fcSubjectTab').onchange = () => {
+    $('fcCustomTabWrap').style.display = $('fcSubjectTab').value === 'custom_fc_tab' ? 'grid' : 'none';
+  };
+
+  // Render dynamic form fields based on selected engineType
+  const renderDynamicEngineForm = () => {
+    const eng = $('egEngineType').value;
+    const host = $('dynamicEngineFormArea');
+    if (eng === 'balance_scale') {
+      host.innerHTML =
+        `<label class="field">Target Berat Kiri (Angka)<input type="number" id="dfTargetWeight" value="12"></label>` +
+        `<label class="field">Pilihan Beban Angka (Pisahkan koma)<input type="text" id="dfScaleOptions" value="2, 4, 5, 6, 8, 10"></label>`;
+    } else if (eng === 'interactive_clock') {
+      host.innerHTML =
+        `<label class="field">Target Jam (1–12)<input type="number" id="dfClockHour" min="1" max="12" value="7"></label>` +
+        `<label class="field">Target Menit (Kelipatan 5: 0–55)<input type="number" id="dfClockMin" min="0" max="55" step="5" value="30"></label>`;
+    } else if (eng === 'cashier_tray') {
+      host.innerHTML =
+        `<label class="field">Total Harga / Kembalian (Rp)<input type="number" id="dfCashTarget" step="500" value="15000"></label>` +
+        `<label class="field">Ikon Barang<input type="text" id="dfCashIcon" value="🎒"></label>`;
+    } else if (eng === 'drag_sequence') {
+      host.innerHTML =
+        `<label class="field" style="grid-column:1/-1">Daftar Langkah Berurutan dari Langkah 1 ke Terakhir (1 baris = 1 langkah, format: Ikon|Teks)<textarea id="dfSeqSteps">1️⃣|Buka buku pelajaran dengan rapi\n2️⃣|Baca doa sebelum belajar\n3️⃣|Simak penjelasan dengan fokus\n4️⃣|Kerjakan latihan soal dengan jujur</textarea></label>`;
+    } else if (eng === 'match_pairs') {
+      host.innerHTML =
+        `<label class="field" style="grid-column:1/-1">Daftar Pasangan Kiri &amp; Kanan (1 baris = 1 pasang, format: Ikon|Kiri|Kanan)<textarea id="dfMatchPairs">🇮🇩|Indonesia|Jakarta\n🇯🇵|Jepang|Tokyo\n🇲🇾|Malaysia|Kuala Lumpur\n🇸🇦|Arab Saudi|Riyadh</textarea></label>`;
+    } else if (eng === 'word_builder') {
+      host.innerHTML =
+        `<label class="field">Kata Target yang Harus Disusun (Huruf Kapital)<input type="text" id="dfWordTarget" value="GARUDA"></label>` +
+        `<label class="field">Ikon Gambar Petunjuk<input type="text" id="dfWordIcon" value="🦅"></label>`;
+    } else if (eng === 'memory_flip') {
+      host.innerHTML =
+        `<label class="field" style="grid-column:1/-1">Daftar Pasangan Kartu Memori (1 baris = 1 pasang, format: Ikon|Kartu A|Kartu B)<textarea id="dfMemPairs">☀️|Matahari|Sun\n🌙|Bulan|Moon\n⭐|Bintang|Star\n🌍|Bumi|Earth</textarea></label>`;
+    } else if (eng === 'micro_plugin') {
+      host.innerHTML =
+        `<label class="field" style="grid-column:1/-1">Kode HTML5 / Canvas Game Mini (Kirim hasil ke Microsite via <code>window.parent.postMessage({type:'WYPHA_GAME_RESULT',isCorrect:true,detailMsg:'Hebat!'},'*')</code>)<textarea id="dfPluginHtml" style="min-height:150px"><!DOCTYPE html><html><body style="margin:0;display:grid;place-items:center;height:100vh;background:#071329;color:#fff;font-family:system-ui;text-align:center"><div><h2>🎯 Mini Game Kustom V41</h2><p>Klik tombol di bawah untuk kirim skor ke Microsite!</p><button onclick="window.parent.postMessage({type:'WYPHA_GAME_RESULT',isCorrect:true,detailMsg:'Mantap! Misi selesai (+5 Coin)'},'*')" style="padding:12px 20px;border-radius:12px;border:0;background:#10b981;color:#04130e;font-weight:900;font-size:15px;cursor:pointer">✅ Selesaikan Tantangan (+5 Coin)</button></div></body></html></textarea></label>`;
+    } else {
+      host.innerHTML =
+        `<label class="field">Teks Arab Opsional<input type="text" id="dfMcqAr" placeholder="Kosongkan jika bukan soal Arab"></label>` +
+        `<label class="field">4 Pilihan Jawaban (Pisahkan dengan tanda |)<input type="text" id="dfMcqChoices" value="Jawaban A|Jawaban B|Jawaban C|Jawaban D"></label>` +
+        `<label class="field">Jawaban yang Benar (Persis salah satu opsi)<input type="text" id="dfMcqAnswer" value="Jawaban A"></label>` +
+        `<label class="field">Penjelasan / Petunjuk<input type="text" id="dfMcqHint" value="Penjelasan singkat jawaban benar."></label>`;
+    }
+  };
+  $('egEngineType').onchange = renderDynamicEngineForm;
+  renderDynamicEngineForm();
+
+  $('loadSampleEngineBtn').onclick = () => {
+    renderDynamicEngineForm();
+    const eng = $('egEngineType').value;
+    const prompts = {
+      balance_scale: 'Seimbangkan papan timbangan agar bernilai tepat 12!',
+      interactive_clock: 'Putar jarum jam menunjukkan pukul 07:30 pagi!',
+      cashier_tray: 'Susun pecahan uang Rupiah senilai Rp15.000!',
+      drag_sequence: 'Urutkan langkah adab belajar dari awal hingga akhir!',
+      match_pairs: 'Cocokkan nama negara dengan ibu kotanya!',
+      word_builder: 'Susun huruf menjadi lambang negara Indonesia!',
+      memory_flip: 'Temukan semua pasangan benda langit Indonesia & Inggris!',
+      quiz_mcq: 'Pilih jawaban yang paling tepat!',
+      micro_plugin: 'Mainkan Mini Game HTML5 Interaktif!'
+    };
+    $('qPromptId').value = prompts[eng] || 'Selesaikan tantangan ini!';
+    showStatus('✨ Contoh isian untuk mesin "' + eng + '" sudah dimuat!');
+  };
+
+  $('addQuestionBtn').onclick = () => {
+    const isNew = $('egTargetMode').value === 'new_game';
+    const gameId = isNew ? ($('egNewGameId').value.trim() || 'custom_game_v41') : $('egBuiltinGameId').value;
+    const eng = $('egEngineType').value;
+    const lvl = $('qLevel').value;
+    const promptId = $('qPromptId').value.trim() || 'Selesaikan tantangan interaktif ini!';
+
+    const item = {
+      gameId,
+      level: lvl,
+      engineType: eng,
+      promptId,
+      promptEn: promptId
+    };
+
+    if (eng === 'balance_scale') {
+      item.targetWeight = Number($('dfTargetWeight')?.value || 10);
+      item.leftLabel = `⚖️ ${item.targetWeight}`;
+      item.options = String($('dfScaleOptions')?.value || '1,2,5,10').split(',').map(x => Number(x.trim())).filter(n => !isNaN(n));
+    } else if (eng === 'interactive_clock') {
+      item.targetHour = Number($('dfClockHour')?.value || 7);
+      item.targetMinute = Number($('dfClockMin')?.value || 0);
+      item.labelId = promptId;
+      item.labelEn = promptId;
+    } else if (eng === 'cashier_tray') {
+      item.targetRp = Number($('dfCashTarget')?.value || 15000);
+      item.itemIcon = $('dfCashIcon')?.value || '🛍️';
+      item.itemTitleId = promptId;
+      item.itemTitleEn = promptId;
+    } else if (eng === 'drag_sequence') {
+      const lines = String($('dfSeqSteps')?.value || '').split('\n').map(s => s.trim()).filter(Boolean);
+      item.steps = lines.map((ln, i) => {
+        const parts = ln.split('|');
+        return {
+          id: 'st-' + i,
+          icon: parts.length > 1 ? parts[0].trim() : '🔹',
+          textId: parts.length > 1 ? parts.slice(1).join('|').trim() : ln,
+          textEn: parts.length > 1 ? parts.slice(1).join('|').trim() : ln
+        };
+      });
+    } else if (eng === 'match_pairs') {
+      const lines = String($('dfMatchPairs')?.value || '').split('\n').map(s => s.trim()).filter(Boolean);
+      item.pairs = lines.map((ln, i) => {
+        const parts = ln.split('|');
+        return {
+          id: 'pr-' + i,
+          icon: parts[0]?.trim() || '🔹',
+          left: parts[1]?.trim() || ln,
+          right: parts[2]?.trim() || ''
+        };
+      });
+    } else if (eng === 'word_builder') {
+      item.wordId = String($('dfWordTarget')?.value || 'WYPHA').trim().toUpperCase();
+      item.wordEn = item.wordId;
+      item.icon = $('dfWordIcon')?.value || '🔤';
+      item.clueId = promptId;
+    } else if (eng === 'memory_flip') {
+      const lines = String($('dfMemPairs')?.value || '').split('\n').map(s => s.trim()).filter(Boolean);
+      item.pairs = lines.map((ln, i) => {
+        const parts = ln.split('|');
+        return {
+          id: 'mp-' + i,
+          icon: parts[0]?.trim() || '🃏',
+          left: parts[1]?.trim() || ln,
+          right: parts[2]?.trim() || parts[1]?.trim() || ln
+        };
+      });
+    } else if (eng === 'micro_plugin') {
+      item.pluginHtml = $('dfPluginHtml')?.value || '';
+    } else {
+      item.arabicText = $('dfMcqAr')?.value.trim() || '';
+      item.arabicSpeak = item.arabicText;
+      item.choicesId = String($('dfMcqChoices')?.value || '').split('|').map(x => x.trim()).filter(Boolean);
+      item.ansId = $('dfMcqAnswer')?.value.trim() || item.choicesId[0] || '';
+      item.hintId = $('dfMcqHint')?.value.trim() || '';
+    }
+
+    state.questions.push(item);
+    saveDraft();
+  
+  // PWA Install Prompt & Service Worker Registration
+  let deferredPrompt = null;
+  const installBtn = $("installPwaBtn");
+  window.addEventListener("beforeinstallprompt", e => {
+    e.preventDefault();
+    deferredPrompt = e;
+    if (installBtn) installBtn.hidden = false;
+  });
+  if (installBtn) {
+    installBtn.onclick = async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      const choice = await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      if (choice?.outcome === "accepted") installBtn.hidden = true;
+    };
+  }
+  window.addEventListener("appinstalled", () => {
+    if (installBtn) installBtn.hidden = true;
+    showStatus("📲 WYPHA Pack Builder berhasil diinstal ke perangkat Anda!");
+  });
+  if ("serviceWorker" in navigator && /^https?:$/i.test(location.protocol)) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("./service-worker.js").catch(() => {});
+    });
+  }
+  renderLists();
+    showStatus('✅ Soal "' + eng + '" berhasil ditambahkan ke paket!');
+  };
+
+  $('addFcCardBtn').onclick = () => {
+    const c = {
+      symbol: $('fcCardSymbol').value.trim() || 'A a',
+      visual: $('fcCardVisual').value.trim() || '🍎',
+      syllable: $('fcCardSyllable').value.trim(),
+      wordId: $('fcCardWordId').value.trim() || 'APEL',
+      wordEn: $('fcCardWordEn').value.trim() || 'APPLE',
+      speechAr: $('fcCardSpeechAr').value.trim(),
+      exampleId: $('fcCardExId').value.trim() || 'Contoh kalimat Indonesia.',
+      exampleEn: $('fcCardExEn').value.trim() || 'English example sentence.'
+    };
+    state.fcCards.push(c);
+    saveDraft();
+    renderLists();
+    showStatus('✅ Kartu Flashcard "' + c.wordId + '" berhasil ditambahkan!');
+  };
+
+  const renderLists = () => {
+    $('egQuestionsCount').textContent = state.questions.length;
+    $('egQuestionsList').innerHTML = state.questions.length
+      ? state.questions.map((q, idx) =>
+          `<div class="item-row">` +
+            `<div><span class="badge">${q.engineType || 'quiz_mcq'}</span> <strong>${idx + 1}. ${q.promptId}</strong><br><small style="color:#94a3b8">Game ID: ${q.gameId} · Level: ${q.level}</small></div>` +
+            `<button type="button" class="btn danger" data-del-q="${idx}">Hapus</button>` +
+          `</div>`
+        ).join('')
+      : `<small style="color:#94a3b8">Belum ada soal ditambahkan. Klik "➕ Tambahkan Soal ke Daftar Paket" di atas.</small>`;
+
+    document.querySelectorAll('[data-del-q]').forEach(b => {
+      b.onclick = () => {
+        state.questions.splice(Number(b.getAttribute('data-del-q')), 1);
+        saveDraft();
+        renderLists();
+      };
+    });
+
+    $('fcCardsCount').textContent = state.fcCards.length;
+    $('fcCardsList').innerHTML = state.fcCards.length
+      ? state.fcCards.map((c, idx) =>
+          `<div class="item-row">` +
+            `<div><span style="font-size:20px">${c.visual}</span> <strong>${c.symbol} · ${c.wordId} / ${c.wordEn}</strong> ${c.speechAr ? `<span class="badge">${c.speechAr}</span>` : ''}</div>` +
+            `<button type="button" class="btn danger" data-del-fc="${idx}">Hapus</button>` +
+          `</div>`
+        ).join('')
+      : `<small style="color:#94a3b8">Belum ada kartu flashcard ditambahkan.</small>`;
+
+    document.querySelectorAll('[data-del-fc]').forEach(b => {
+      b.onclick = () => {
+        state.fcCards.splice(Number(b.getAttribute('data-del-fc')), 1);
+        saveDraft();
+        renderLists();
+      };
+    });
+  };
+
+  const buildCurrentPackObject = () => {
+    const expType = $('exportTypeSelect').value;
+    const packTitle = $('packTitleInput').value.trim() || 'Paket Ekspansi WYPHA V41';
+    if (expType === 'flashcard') {
+      const isCustTab = $('fcSubjectTab').value === 'custom_fc_tab';
+      const customLbl = $('fcCustomTabLabel').value.trim() || 'Pelajaran Tambahan';
+      const subjTab = isCustTab ? customLbl.toLowerCase().replace(/[^a-z0-9]+/g, '_') : $('fcSubjectTab').value;
+      const deckId = $('fcDeckId').value.trim() || 'fc_custom_v41';
+      return {
+        schema: 'wypha-learn-pack/v1',
+        packId: 'learn-' + Date.now(),
+        packTitle,
+        unlockDeckIds: [deckId],
+        customDecks: [{
+          id: deckId,
+          subjectTab: subjTab,
+          subjectLabelId: isCustTab ? customLbl : '',
+          subjectLabelEn: isCustTab ? customLbl : '',
+          icon: $('fcIcon').value.trim() || '🧩',
+          color: '#00d2ff',
+          titleId: $('fcTitleId').value.trim() || packTitle,
+          titleEn: $('fcTitleEn').value.trim() || packTitle,
+          cards: state.fcCards.map((c, i) => ({
+            id: deckId + '-' + (i + 1),
+            symbol: c.symbol,
+            visual: c.visual,
+            wordId: c.wordId,
+            wordEn: c.wordEn,
+            syllable: c.syllable,
+            exampleId: c.exampleId,
+            exampleEn: c.exampleEn,
+            speechAr: c.speechAr || undefined,
+            speechId: c.wordId + '. ' + c.exampleId,
+            speechEn: c.wordEn + '. ' + c.exampleEn,
+            phonicsId: c.wordId,
+            phonicsEn: c.wordEn
+          }))
+        }]
+      };
+    }
+
+    const isNewGame = $('egTargetMode').value === 'new_game';
+    const gid = isNewGame ? ($('egNewGameId').value.trim() || 'custom_game_v41') : $('egBuiltinGameId').value;
+    const isCustSubj = $('egSubjectTab').value === 'custom_subject';
+    const custSubjLbl = $('egCustomSubjectLabel').value.trim() || 'Pelajaran Baru';
+    const subjTab = isCustSubj ? custSubjLbl.toLowerCase().replace(/[^a-z0-9]+/g, '_') : $('egSubjectTab').value;
+    const engType = $('egEngineType').value;
+
+    const customGames = isNewGame ? [{
+      id: gid,
+      subjectTab: subjTab,
+      subjectLabelId: isCustSubj ? custSubjLbl : '',
+      subjectLabelEn: isCustSubj ? custSubjLbl : '',
+      subjectIcon: $('egNewGameIcon').value.trim() || '🎮',
+      engineType: engType,
+      pluginHtml: engType === 'micro_plugin' ? (state.questions.find(x => x.pluginHtml)?.pluginHtml || $('dfPluginHtml')?.value || '') : '',
+      icon: $('egNewGameIcon').value.trim() || '🎮',
+      color: '#38bdf8',
+      titleId: $('egNewGameTitleId').value.trim() || packTitle,
+      titleEn: $('egNewGameTitleEn').value.trim() || packTitle
+    }] : [];
+
+    return {
+      schema: 'wypha-edugame-pack/v2',
+      packId: 'pack-' + Date.now(),
+      packTitle,
+      unlockGameIds: [gid],
+      customGames,
+      questions: state.questions
+    };
+  };
+
+  const refreshPreview = () => {
+    $('jsonPreviewBox').value = JSON.stringify(buildCurrentPackObject(), null, 2);
+  };
+
+  // Pure JS Stored-Method ZIP Builder (Zero External Libraries)
+  const crcTable = (() => {
+    const t = new Uint32Array(256);
+    for (let n = 0; n < 256; n++) {
+      let c = n;
+      for (let k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+      t[n] = c >>> 0;
+    }
+    return t;
+  })();
+  const crc32 = bytes => {
+    let c = 0xFFFFFFFF;
+    for (let i = 0; i < bytes.length; i++) c = crcTable[(c ^ bytes[i]) & 0xFF] ^ (c >>> 8);
+    return (c ^ 0xFFFFFFFF) >>> 0;
+  };
+  const buildZipBlob = entries => {
+    const enc = new TextEncoder();
+    const parts = [];
+    const central = [];
+    let offset = 0;
+    entries.forEach(e => {
+      const nameB = enc.encode(e.name);
+      const dataB = enc.encode(e.content);
+      const crc = crc32(dataB);
+      const lf = new ArrayBuffer(30 + nameB.length);
+      const lv = new DataView(lf);
+      lv.setUint32(0, 0x04034B50, true);
+      lv.setUint16(4, 20, true);
+      lv.setUint16(8, 0, true);
+      lv.setUint32(14, crc, true);
+      lv.setUint32(18, dataB.length, true);
+      lv.setUint32(22, dataB.length, true);
+      lv.setUint16(26, nameB.length, true);
+      new Uint8Array(lf, 30).set(nameB);
+      parts.push(new Uint8Array(lf), dataB);
+
+      const cd = new ArrayBuffer(46 + nameB.length);
+      const cv = new DataView(cd);
+      cv.setUint32(0, 0x02014B50, true);
+      cv.setUint16(4, 20, true);
+      cv.setUint16(6, 20, true);
+      cv.setUint32(16, crc, true);
+      cv.setUint32(20, dataB.length, true);
+      cv.setUint32(24, dataB.length, true);
+      cv.setUint16(28, nameB.length, true);
+      cv.setUint32(42, offset, true);
+      new Uint8Array(cd, 46).set(nameB);
+      central.push(new Uint8Array(cd));
+      offset += 30 + nameB.length + dataB.length;
+    });
+    const cdSize = central.reduce((a, b) => a + b.length, 0);
+    const eocd = new ArrayBuffer(22);
+    const ev = new DataView(eocd);
+    ev.setUint32(0, 0x06054B50, true);
+    ev.setUint16(8, entries.length, true);
+    ev.setUint16(10, entries.length, true);
+    ev.setUint32(12, cdSize, true);
+    ev.setUint32(16, offset, true);
+    return new Blob([...parts, ...central, new Uint8Array(eocd)], { type: 'application/zip' });
+  };
+
+  $('downloadZipBtn').onclick = () => {
+    const packObj = buildCurrentPackObject();
+    const isFc = $('exportTypeSelect').value === 'flashcard';
+    const jsonName = isFc ? 'wypha-learn-pack.json' : 'wypha-edugame-pack.json';
+    const blob = buildZipBlob([
+      { name: jsonName, content: JSON.stringify(packObj, null, 2) },
+      { name: 'CARA-PASANG.txt', content: 'Impor file .ZIP ini langsung di tombol Impor Paket (.ZIP) pada Microsite WYPHA V41!' }
+    ]);
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = (isFc ? 'WYPHA-Lesson-Pack-' : 'WYPHA-EduGame-Pack-') + Date.now() + '.zip';
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 15000);
+    showStatus('📦 File .ZIP siap pakai berhasil diunduh!');
+  };
+
+  $('downloadJsonBtn').onclick = () => {
+    const packObj = buildCurrentPackObject();
+    const blob = new Blob([JSON.stringify(packObj, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'WYPHA-Pack-' + Date.now() + '.json';
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 15000);
+    showStatus('📄 File .JSON berhasil diunduh!');
+  };
+
+  $('importExistingPackInput').onchange = async e => {
+    const f = e.target.files?.[0];
+    if (!f) return;
+    try {
+      let jsonTxt = '';
+      if (f.name.toLowerCase().endsWith('.json')) {
+        jsonTxt = await f.text();
+      } else {
+        const buf = await f.arrayBuffer();
+        const bytes = new Uint8Array(buf);
+        const view = new DataView(buf);
+        const dec = new TextDecoder('utf-8');
+        let off = 0;
+        while (off + 30 <= bytes.length) {
+          if (view.getUint32(off, true) !== 0x04034B50) break;
+          const comp = view.getUint32(off + 18, true);
+          const nLen = view.getUint16(off + 26, true);
+          const eLen = view.getUint16(off + 28, true);
+          const nm = dec.decode(bytes.subarray(off + 30, off + 30 + nLen));
+          const dStart = off + 30 + nLen + eLen;
+          if (nm.toLowerCase().endsWith('.json') && view.getUint16(off + 8, true) === 0) {
+            jsonTxt = dec.decode(bytes.subarray(dStart, dStart + comp));
+            break;
+          }
+          off = dStart + comp;
+        }
+      }
+      const parsed = JSON.parse(jsonTxt);
+      if (Array.isArray(parsed.questions)) state.questions = parsed.questions;
+      if (Array.isArray(parsed.customDecks) && parsed.customDecks[0]?.cards) state.fcCards = parsed.customDecks[0].cards;
+      saveDraft();
+      renderLists();
+      showStatus('✅ Paket lama berhasil dimuat ke editor!');
+    } catch (err) {
+      showStatus('⚠ Gagal membaca file paket: ' + err.message);
+    }
+    e.target.value = '';
+  };
+
+  $('resetBuilderBtn').onclick = () => {
+    state = { questions: [], fcCards: [] };
+    saveDraft();
+    renderLists();
+    showStatus('🗑️ Draft berhasil dikosongkan.');
+  };
+
+  renderLists();
+  refreshPreview();
+})();
+</script>
+</body>
+</html>
