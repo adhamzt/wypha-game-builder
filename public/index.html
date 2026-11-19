@@ -11,7 +11,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
 <link rel="apple-touch-icon" href="./icon-192.png">
-<title>WYPHA Game &amp; Lesson Pack Builder (V41 Studio Pendamping)</title>
+<title>WYPHA Game &amp; Lesson Pack Builder (V43 PWA Studio Pendamping)</title>
 <style>
   :root {
     --bg: #040915;
@@ -150,8 +150,8 @@
 <div class="wrap">
   <header class="hero">
     <div>
-      <h1>🧩 WYPHA Game &amp; Lesson Pack Builder (V41)</h1>
-      <p>Aplikasi PWA pembuat &amp; upgrade Paket Soal untuk seluruh 45 Edu-Game &amp; 12 Pelajaran Flashcard 3D Microsite WYPHA (<code>.ZIP</code>) yang langsung menyatu dengan mekanik asli Microsite WYPHA V41.</p>
+      <h1>🧩 WYPHA Game &amp; Lesson Pack Builder V43 (PWA)</h1>
+      <p>Aplikasi PWA pembuat &amp; upgrade Paket Soal untuk seluruh 45 Edu-Game &amp; 12 Pelajaran Flashcard 3D Microsite WYPHA (<code>.ZIP</code>) yang langsung menyatu dengan mekanik asli Microsite WYPHA V43.</p>
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
       <button type="button" class="btn green" id="installPwaBtn" hidden>📲 Install Aplikasi (PWA)</button>
@@ -163,9 +163,10 @@
   <div id="globalStatus" class="status-bar hidden"></div>
 
   <nav class="tabs" role="tablist">
-    <button type="button" class="tab-btn active" data-tab="edugame">🎮 1. Pembuat Edu-Game &amp; Soal Interaktif</button>
-    <button type="button" class="tab-btn" data-tab="flashcard">🧩 2. Pembuat Pelajaran Flashcard 3D</button>
-    <button type="button" class="tab-btn" data-tab="export">📦 3. Preview &amp; Ekspor .ZIP Siap Pakai</button>
+    <button type="button" class="tab-btn active" data-tab="edugame">🎮 1. Pembuat Edu-Game &amp; Soal (45 Game)</button>
+    <button type="button" class="tab-btn" data-tab="flashcard">🧩 2. Pelajaran Flashcard 3D (12 Pelajaran)</button>
+    <button type="button" class="tab-btn" data-tab="ai_prompt">🤖 3. AI Prompt Generator &amp; Verifikasi JSON</button>
+    <button type="button" class="tab-btn" data-tab="export">📦 4. Preview &amp; Ekspor .ZIP</button>
   </nav>
 
   <!-- TAB 1: EDU-GAME & INTERACTIVE QUESTION BUILDER -->
@@ -201,7 +202,7 @@
       </div>
 
       <div id="egNewGameFields" class="grid-3">
-        <label class="field">ID Game Unik (huruf kecil &amp; garis bawah)<input type="text" id="egNewGameId" value="timbangan_pecahan_v41"></label>
+        <label class="field">ID Game Unik (huruf kecil &amp; garis bawah)<input type="text" id="egNewGameId" value="timbangan_pecahan_v43"></label>
         <label class="field">Judul Game (Indonesia)<input type="text" id="egNewGameTitleId" value="Timbangan Angka Pintar"></label>
         <label class="field">Judul Game (English)<input type="text" id="egNewGameTitleEn" value="Smart Number Balance"></label>
         <label class="field">Ikon Emoji<input type="text" id="egNewGameIcon" value="⚖️"></label>
@@ -307,12 +308,66 @@
     </div>
   </section>
 
-  <!-- TAB 3: EXPORT .ZIP & JSON PREVIEW -->
+  <!-- TAB 3: AI PROMPT GENERATOR & JSON VERIFIER -->
+  <section id="tab-ai_prompt" class="panel hidden">
+    <div class="subcard">
+      <strong style="color:#ffd460;font-size:14px">🤖 Langkah 1: Buat Prompt AI Otomatis Sesuai Jenis Game / Pelajaran</strong>
+      <div class="grid-3">
+        <label class="field">Jenis Target AI
+          <select id="aiTargetKind">
+            <option value="edugame_45">🎮 1 dari 45 Edu-Game Bawaan Microsite</option>
+            <option value="flashcard_12">🧩 1 dari 12 Pelajaran Flashcard 3D</option>
+          </select>
+        </label>
+        <label class="field" id="aiGameSelectWrap">Pilih Target Edu-Game (45 Game)
+          <select id="aiGameSelect"></select>
+        </label>
+        <label class="field" id="aiDeckSelectWrap" style="display:none">Pilih Target Pelajaran (12 Pelajaran)
+          <select id="aiDeckSelect"></select>
+        </label>
+      </div>
+      <div class="grid-3">
+        <label class="field">Topik / Tema Soal yang Diinginkan<input type="text" id="aiTopicInput" value="Kosakata Buah, Hewan & Benda Sehari-hari Anak"></label>
+        <label class="field">Jumlah Soal / Kartu<input type="number" id="aiCountInput" min="1" max="100" value="10"></label>
+        <label class="field">Level Usia Anak
+          <select id="aiLevelSelect">
+            <option value="all">Semua Usia (Tampil di Semua Level)</option>
+            <option value="level1">Level 1 (PAUD / TK 3–5 Th)</option>
+            <option value="level2">Level 2 (SD Awal 6–8 Th)</option>
+            <option value="level3">Level 3 (SD Lanjut 9–12 Th)</option>
+          </select>
+        </label>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button type="button" class="btn gold" id="generateAiPromptBtn">✨ Buat Prompt AI Siap Copy</button>
+        <button type="button" class="btn primary" id="copyAiPromptBtn">📋 Copy Prompt ke Clipboard</button>
+      </div>
+      <label class="field">Prompt Siap Bawa ke Gemini / ChatGPT (Salin seluruh teks di bawah):
+        <textarea id="aiGeneratedPromptBox" readonly style="min-height:170px"></textarea>
+      </label>
+    </div>
+
+    <div class="subcard">
+      <strong style="color:#8ef5ff;font-size:14px">✅ Langkah 2: Paste Hasil JSON dari AI untuk Diverifikasi &amp; Dijadikan .ZIP</strong>
+      <label class="field">Tempelkan (Paste) kode JSON hasil jawaban AI di sini:
+        <textarea id="aiJsonPasteBox" placeholder="Tempel JSON hasil AI di sini (format ```json ... ``` juga otomatis dibersihkan)..." style="min-height:160px"></textarea>
+      </label>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button type="button" class="btn primary" id="verifyAiJsonBtn">🔍 Verifikasi &amp; Muat ke Builder</button>
+        <button type="button" class="btn green" id="verifyAndDownloadZipBtn">📦 Verifikasi &amp; Langsung Download .ZIP</button>
+      </div>
+      <div id="aiVerifyReportBox" style="padding:10px 12px;border-radius:10px;background:rgba(4,12,28,.85);border:1px solid rgba(56,189,248,.3);font:600 12.5px/1.5 system-ui;color:#cbd5e1">
+        Status Verifikasi: Belum ada JSON yang diperiksa.
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB 4: EXPORT .ZIP & JSON PREVIEW -->
   <section id="tab-export" class="panel hidden">
     <div class="subcard">
-      <strong style="color:#ffd460;font-size:14px">📦 Pengaturan Paket .ZIP Siap Impor ke Microsite WYPHA V41</strong>
+      <strong style="color:#ffd460;font-size:14px">📦 Pengaturan Paket .ZIP Siap Impor ke Microsite WYPHA V43</strong>
       <div class="grid-2">
-        <label class="field">Nama Paket / Judul Produk DLC<input type="text" id="packTitleInput" value="Paket Ekspansi Edu-Game Interaktif WYPHA V41"></label>
+        <label class="field">Nama Paket / Judul Produk DLC<input type="text" id="packTitleInput" value="Paket Ekspansi Edu-Game Interaktif WYPHA V43"></label>
         <label class="field">Jenis Paket Ekspor
           <select id="exportTypeSelect">
             <option value="edugame">🎮 Paket Edu-Game &amp; Soal Interaktif (.ZIP)</option>
@@ -335,7 +390,7 @@
 <script>
 (() => {
   const $ = id => document.getElementById(id);
-  const STORAGE_KEY = 'wypha_pack_builder_v41_draft';
+  const STORAGE_KEY = 'wypha_pack_builder_v43_draft';
 
   let state = {
     questions: [],
@@ -434,7 +489,7 @@
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       const target = btn.getAttribute('data-tab');
-      ['edugame', 'flashcard', 'export'].forEach(t => {
+      ['edugame', 'flashcard', 'ai_prompt', 'export'].forEach(t => {
         $('tab-' + t).classList.toggle('hidden', t !== target);
       });
       if (target === 'export') refreshPreview();
@@ -681,7 +736,7 @@
 
   const buildCurrentPackObject = () => {
     const expType = $('exportTypeSelect').value;
-    const packTitle = $('packTitleInput').value.trim() || 'Paket Ekspansi WYPHA V41';
+    const packTitle = $('packTitleInput').value.trim() || 'Paket Ekspansi WYPHA V43';
     if (expType === 'flashcard') {
       if ($('fcTargetMode')?.value === 'builtin_deck') {
         const targetDeckId = $('fcBuiltinDeckId')?.value || 'fc_abjad_az';
@@ -847,7 +902,7 @@
     const jsonName = isFc ? 'wypha-learn-pack.json' : 'wypha-edugame-pack.json';
     const blob = buildZipBlob([
       { name: jsonName, content: JSON.stringify(packObj, null, 2) },
-      { name: 'CARA-PASANG.txt', content: 'Impor file .ZIP ini langsung di tombol Impor Paket (.ZIP) pada Microsite WYPHA V41!' }
+      { name: 'CARA-PASANG.txt', content: 'Impor file .ZIP ini langsung di tombol Impor Paket (.ZIP) pada Microsite WYPHA V43!' }
     ]);
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
@@ -913,6 +968,349 @@
     renderLists();
     showStatus('🗑️ Draft berhasil dikosongkan.');
   };
+
+
+  // Populate AI Target Dropdowns (45 Games & 12 Flashcard Lessons)
+  const populateAiSelects = () => {
+    const agSel = $("aiGameSelect");
+    const adSel = $("aiDeckSelect");
+    if (agSel && $("egBuiltinGameId")) agSel.innerHTML = $("egBuiltinGameId").innerHTML;
+    if (adSel && $("fcBuiltinDeckId")) adSel.innerHTML = $("fcBuiltinDeckId").innerHTML;
+  };
+  populateAiSelects();
+
+  $("aiTargetKind").onchange = () => {
+    const isFc = $("aiTargetKind").value === "flashcard_12";
+    $("aiGameSelectWrap").style.display = isFc ? "none" : "grid";
+    $("aiDeckSelectWrap").style.display = isFc ? "grid" : "none";
+  };
+
+  const buildSchemaTemplateForEngine = (gameObj, lvl) => {
+    const gid = gameObj.id;
+    const eng = gameObj.engine;
+    if (eng === "word_builder") {
+      return `{
+  "schema": "wypha-edugame-pack/v2",
+  "packTitle": "Paket Soal ${gameObj.title}",
+  "unlockGameIds": ["${gid}"],
+  "questions": [
+    {
+      "gameId": "${gid}",
+      "engineType": "word_builder",
+      "level": "${lvl}",
+      "icon": "🍎",
+      "wordId": "APEL",
+      "wordEn": "APPLE",
+      "clueId": "Buah berwarna merah manis dan renyah",
+      "clueEn": "A sweet crunchy red fruit",
+      "promptId": "Susun huruf menjadi nama buah merah yang manis!"
+    }
+  ]
+}`;
+    }
+    if (eng === "balance_scale") {
+      return `{
+  "schema": "wypha-edugame-pack/v2",
+  "packTitle": "Paket Soal ${gameObj.title}",
+  "unlockGameIds": ["${gid}"],
+  "questions": [
+    {
+      "gameId": "${gid}",
+      "engineType": "balance_scale",
+      "level": "${lvl}",
+      "targetWeight": 12,
+      "leftLabel": "⚖️ 12 kg",
+      "options": [2, 4, 5, 6, 8, 10],
+      "clueId": "Seimbangkan papan timbangan agar sisi kanan tepat 12 kg!",
+      "clueEn": "Balance the scale so the right pan equals 12 kg!"
+    }
+  ]
+}`;
+    }
+    if (eng === "interactive_clock") {
+      return `{
+  "schema": "wypha-edugame-pack/v2",
+  "packTitle": "Paket Soal ${gameObj.title}",
+  "unlockGameIds": ["${gid}"],
+  "questions": [
+    {
+      "gameId": "${gid}",
+      "engineType": "interactive_clock",
+      "level": "${lvl}",
+      "targetHour": 7,
+      "targetMinute": 30,
+      "labelId": "Putar jarum jam menunjukkan pukul 07:30 pagi!",
+      "labelEn": "Set the clock to 07:30 AM!"
+    }
+  ]
+}`;
+    }
+    if (eng === "cashier_tray") {
+      return `{
+  "schema": "wypha-edugame-pack/v2",
+  "packTitle": "Paket Soal ${gameObj.title}",
+  "unlockGameIds": ["${gid}"],
+  "questions": [
+    {
+      "gameId": "${gid}",
+      "engineType": "cashier_tray",
+      "level": "${lvl}",
+      "targetRp": 15000,
+      "itemIcon": "🎒",
+      "itemTitleId": "Bayar tas sekolah seharga Rp15.000",
+      "itemTitleEn": "Pay Rp15,000 for the school bag"
+    }
+  ]
+}`;
+    }
+    if (eng === "drag_sequence") {
+      return `{
+  "schema": "wypha-edugame-pack/v2",
+  "packTitle": "Paket Soal ${gameObj.title}",
+  "unlockGameIds": ["${gid}"],
+  "questions": [
+    {
+      "gameId": "${gid}",
+      "engineType": "drag_sequence",
+      "level": "${lvl}",
+      "promptId": "Urutkan langkah berikut dari awal sampai akhir!",
+      "steps": [
+        { "id": "st-0", "icon": "1️⃣", "textId": "Langkah pertama", "textEn": "First step" },
+        { "id": "st-1", "icon": "2️⃣", "textId": "Langkah kedua", "textEn": "Second step" },
+        { "id": "st-2", "icon": "3️⃣", "textId": "Langkah ketiga", "textEn": "Third step" }
+      ]
+    }
+  ]
+}`;
+    }
+    if (eng === "memory_flip" || eng === "match_pairs") {
+      return `{
+  "schema": "wypha-edugame-pack/v2",
+  "packTitle": "Paket Soal ${gameObj.title}",
+  "unlockGameIds": ["${gid}"],
+  "questions": [
+    {
+      "gameId": "${gid}",
+      "engineType": "${eng}",
+      "level": "${lvl}",
+      "promptId": "Cocokkan semua pasangan berikut!",
+      "pairs": [
+        { "id": "p-1", "icon": "☀️", "left": "Matahari", "right": "Sun" },
+        { "id": "p-2", "icon": "🌙", "left": "Bulan", "right": "Moon" }
+      ]
+    }
+  ]
+}`;
+    }
+    return `{
+  "schema": "wypha-edugame-pack/v2",
+  "packTitle": "Paket Soal ${gameObj.title}",
+  "unlockGameIds": ["${gid}"],
+  "questions": [
+    {
+      "gameId": "${gid}",
+      "engineType": "quiz_mcq",
+      "level": "${lvl}",
+      "visual": "🎯",
+      "promptId": "Tulis pertanyaan unik di sini?",
+      "promptEn": "Write unique question here?",
+      "choicesId": ["Opsi A", "Opsi B", "Opsi C", "Opsi D"],
+      "ansId": "Opsi A",
+      "hintId": "Penjelasan singkat mengapa Opsi A benar."
+    }
+  ]
+}`;
+  };
+
+  const generateAiPromptNow = () => {
+    const kind = $("aiTargetKind").value;
+    const topic = $("aiTopicInput").value.trim() || "Materi Edukasi Anak";
+    const count = Math.max(1, Math.min(100, Number($("aiCountInput").value || 10)));
+    const lvl = $("aiLevelSelect").value || "all";
+    let promptText = "";
+    if (kind === "flashcard_12") {
+      const deckId = $("aiDeckSelect").value || "fc_abjad_az";
+      const deckObj = WYPHA_BUILTIN_DECKS_12.find(d => d.id === deckId) || WYPHA_BUILTIN_DECKS_12[0];
+      const isAr = deckObj.tab === "mengaji_doa";
+      promptText =
+`Buatkan TEPAT ${count} kartu Flashcard 3D BARU (semua kata/kartu harus unik, tidak boleh duplikat) untuk pelajaran Microsite WYPHA V43:
+- Target Pelajaran: ${deckObj.title} (deckId: "${deckId}")
+- Topik Materi: ${topic}
+- ATURAN KETAT:
+  1. Balas HANYA dengan 1 blok JSON murni yang valid tanpa teks pengantar/penutup.
+  2. Pisahkan 100% kalimat Bahasa Indonesia (speechId), Native English (speechEn)${isAr ? ", dan aksara Arab berharakat murni (speechAr)" : ""}.
+  3. Gunakan format JSON persis seperti template berikut:
+{
+  "schema": "wypha-learn-pack/v1",
+  "packTitle": "Upgrade ${count} Kartu ${deckObj.title}",
+  "unlockDeckIds": ["${deckId}"],
+  "cards": [
+    {
+      "deckId": "${deckId}",
+      "symbol": "${isAr ? "أَ" : "A a"}",
+      "visual": "🍎",
+      "wordId": "APEL",
+      "wordEn": "APPLE",
+      "syllable": "A - pel",
+      "exampleId": "Ini buah apel merah yang manis.",
+      "exampleEn": "This is a sweet red apple.",
+      "speechId": "Apel. Ini buah apel merah yang manis.",
+      "speechEn": "Apple. This is a sweet red apple."${isAr ? ',\n      "speechAr": "تُفَّاحَةٌ"' : ""}
+    }
+  ]
+}`;
+    } else {
+      const gid = $("aiGameSelect").value || "word_phonics";
+      const gObj = WYPHA_BUILTIN_GAMES_45.find(g => g.id === gid) || WYPHA_BUILTIN_GAMES_45[0];
+      const tpl = buildSchemaTemplateForEngine(gObj, lvl);
+      promptText =
+`Buatkan TEPAT ${count} soal edukatif BARU yang 100% unik (tidak boleh ada soal kembar/duplikat) untuk Edu-Game Microsite WYPHA V43:
+- Target Game: ${gObj.title} (gameId: "${gObj.id}")
+- Mesin Interaktif (engineType): "${gObj.engine}"
+- Topik Materi: ${topic}
+- Level Usia: ${lvl}
+- ATURAN KETAT:
+  1. Balas HANYA dengan 1 blok JSON murni yang valid tanpa penjelasan lain.
+  2. Setiap soal WAJIB memiliki "gameId": "${gObj.id}", "engineType": "${gObj.engine}", dan isi unik.
+  3. Ikuti struktur JSON persis seperti contoh berikut:
+${tpl}`;
+    }
+    $("aiGeneratedPromptBox").value = promptText;
+    showStatus("✨ Prompt AI siap pakai berhasil dibuat! Klik Copy lalu bawa ke Gemini / ChatGPT.");
+  };
+
+  $("generateAiPromptBtn").onclick = generateAiPromptNow;
+  $("copyAiPromptBtn").onclick = async () => {
+    if (!$("aiGeneratedPromptBox").value.trim()) generateAiPromptNow();
+    try {
+      await navigator.clipboard.writeText($("aiGeneratedPromptBox").value);
+      showStatus("📋 Prompt AI berhasil disalin ke Clipboard!");
+    } catch (e) {
+      $("aiGeneratedPromptBox").select();
+      document.execCommand("copy");
+      showStatus("📋 Prompt AI berhasil disalin!");
+    }
+  };
+
+  const cleanAndParseAiJson = raw => {
+    let s = String(raw || "").replace(/^﻿/, "").trim();
+    if (!s) throw new Error("Kotak JSON masih kosong. Tempel hasil jawaban AI terlebih dahulu.");
+    s = s.replace(/^```(?:json|javascript|js)?\s*/i, "").replace(/\s*```$/i, "").trim();
+    s = s.replace(/\\([\[\]\{\}\_\*])/g, "$1").replace(/[“”]/g, '"').replace(/,\s*([}\]])/g, "$1");
+    const firstBrace = s.indexOf("{");
+    const firstBracket = s.indexOf("[");
+    let startIdx = -1;
+    if (firstBrace >= 0 && firstBracket >= 0) startIdx = Math.min(firstBrace, firstBracket);
+    else startIdx = Math.max(firstBrace, firstBracket);
+    if (startIdx > 0) s = s.slice(startIdx);
+    const lastBrace = s.lastIndexOf("}");
+    const lastBracket = s.lastIndexOf("]");
+    const endIdx = Math.max(lastBrace, lastBracket);
+    if (endIdx > 0) s = s.slice(0, endIdx + 1);
+    return JSON.parse(s);
+  };
+
+  const verifyAndLoadAiJson = (autoDownloadZip = false) => {
+    const reportEl = $("aiVerifyReportBox");
+    try {
+      const parsed = cleanAndParseAiJson($("aiJsonPasteBox").value);
+      const isFcPack = Array.isArray(parsed.cards) || Array.isArray(parsed.customDecks) || parsed.schema === "wypha-learn-pack/v1";
+
+      if (isFcPack) {
+        const rawCards = Array.isArray(parsed.cards)
+          ? parsed.cards
+          : (Array.isArray(parsed.customDecks?.[0]?.cards) ? parsed.customDecks[0].cards : []);
+        if (!rawCards.length) throw new Error("JSON Flashcard tidak memiliki array 'cards' yang berisi kartu.");
+        const fallbackDeckId = parsed.unlockDeckIds?.[0] || rawCards[0]?.deckId || $("aiDeckSelect")?.value || "fc_abjad_az";
+        state.fcCards = rawCards.map(c => ({
+          symbol: String(c.symbol || c.wordId?.slice(0, 1) || "A"),
+          visual: String(c.visual || "🌟"),
+          syllable: String(c.syllable || ""),
+          wordId: String(c.wordId || "KATA"),
+          wordEn: String(c.wordEn || c.wordId || "WORD"),
+          speechAr: String(c.speechAr || ""),
+          exampleId: String(c.exampleId || ""),
+          exampleEn: String(c.exampleEn || c.exampleId || "")
+        }));
+        $("fcTargetMode").value = "builtin_deck";
+        $("fcTargetMode").dispatchEvent(new Event("change"));
+        if ($("fcBuiltinDeckId")) $("fcBuiltinDeckId").value = fallbackDeckId;
+        $("exportTypeSelect").value = "flashcard";
+        if (parsed.packTitle) $("packTitleInput").value = parsed.packTitle;
+        saveDraft();
+        renderLists();
+        reportEl.style.borderColor = "#34d399";
+        reportEl.style.color = "#a7f3d0";
+        reportEl.innerHTML = `✅ <strong>TERVERIFIKASI 100% VALID!</strong><br>Ditemukan <b>${state.fcCards.length} Kartu Flashcard 3D</b> untuk pelajaran <code>${fallbackDeckId}</code>. Semua kartu sudah dimuat ke Builder &amp; siap diekspor ke <code>.ZIP</code>!`;
+        if (autoDownloadZip) $("downloadZipBtn").click();
+        return;
+      }
+
+      const rawQs = Array.isArray(parsed) ? parsed : (Array.isArray(parsed.questions) ? parsed.questions : []);
+      if (!rawQs.length) throw new Error("JSON Edu-Game tidak memiliki array 'questions' yang berisi soal.");
+
+      const fallbackGid = parsed.unlockGameIds?.[0] || rawQs[0]?.gameId || $("aiGameSelect")?.value || "word_phonics";
+      const matchedGame = WYPHA_BUILTIN_GAMES_45.find(g => g.id === fallbackGid);
+      const fallbackEngine = matchedGame ? matchedGame.engine : (rawQs[0]?.engineType || "quiz_mcq");
+
+      const validQs = [];
+      const warnings = [];
+      rawQs.forEach((q, idx) => {
+        if (!q || typeof q !== "object") return;
+        const gid = String(q.gameId || fallbackGid).trim();
+        const eng = String(q.engineType || fallbackEngine).trim();
+        const fixed = {
+          ...q,
+          gameId: gid,
+          engineType: eng,
+          level: ["level1", "level2", "level3", "all"].includes(q.level) ? q.level : "all",
+          promptId: String(q.promptId || q.clueId || q.labelId || q.itemTitleId || ("Soal #" + (idx + 1))).trim()
+        };
+        if (eng === "word_builder" && !fixed.wordId && !fixed.wordEn) {
+          warnings.push(`Soal #${idx + 1} belum memiliki wordId.`);
+          return;
+        }
+        if (eng === "quiz_mcq" && (!Array.isArray(fixed.choicesId) || fixed.choicesId.length < 2)) {
+          warnings.push(`Soal #${idx + 1} pilihan ganda kurang dari 2 opsi.`);
+          return;
+        }
+        validQs.push(fixed);
+      });
+
+      if (!validQs.length) throw new Error("Tidak ada soal yang lolos verifikasi skema. " + warnings.join(" "));
+
+      state.questions = validQs;
+      if (matchedGame) {
+        $("egTargetMode").value = "builtin_game";
+        $("egTargetMode").dispatchEvent(new Event("change"));
+        $("egBuiltinGameId").value = matchedGame.id;
+        $("egEngineType").value = matchedGame.engine;
+        renderDynamicEngineForm();
+      }
+      $("exportTypeSelect").value = "edugame";
+      if (parsed.packTitle) $("packTitleInput").value = parsed.packTitle;
+      saveDraft();
+      renderLists();
+
+      reportEl.style.borderColor = "#34d399";
+      reportEl.style.color = "#a7f3d0";
+      reportEl.innerHTML =
+        `✅ <strong>TERVERIFIKASI 100% VALID!</strong><br>` +
+        `Lolos Verifikasi: <b>${validQs.length} Soal</b> untuk Game <code>${fallbackGid}</code> (Mesin: <b>${fallbackEngine}</b>).` +
+        (warnings.length ? `<br><span style="color:#fde68a">⚠ Catatan: ${warnings.join(" | ")}</span>` : "") +
+        `<br>Semua soal sudah dimuat ke Builder. Klik <b>Download .ZIP</b> lalu impor di Microsite WYPHA V43 (mode khusus soal impor otomatis aktif)!`;
+
+      if (autoDownloadZip) $("downloadZipBtn").click();
+    } catch (err) {
+      reportEl.style.borderColor = "#ef4444";
+      reportEl.style.color = "#fecaca";
+      reportEl.innerHTML = `❌ <strong>GAGAL VERIFIKASI JSON:</strong> ${err.message}`;
+    }
+  };
+
+  $("verifyAiJsonBtn").onclick = () => verifyAndLoadAiJson(false);
+  $("verifyAndDownloadZipBtn").onclick = () => verifyAndLoadAiJson(true);
+  generateAiPromptNow();
 
   renderLists();
   refreshPreview();
