@@ -151,7 +151,7 @@
   <header class="hero">
     <div>
       <h1>🧩 WYPHA Game &amp; Lesson Pack Builder (V41)</h1>
-      <p>Aplikasi mandiri pembuat Paket Soal Interaktif, Game Baru, Mata Pelajaran Baru &amp; Flashcard 3D (<code>.ZIP</code>) yang langsung menyatu dengan mekanik asli Microsite WYPHA V41.</p>
+      <p>Aplikasi PWA pembuat &amp; upgrade Paket Soal untuk seluruh 45 Edu-Game &amp; 12 Pelajaran Flashcard 3D Microsite WYPHA (<code>.ZIP</code>) yang langsung menyatu dengan mekanik asli Microsite WYPHA V41.</p>
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
       <button type="button" class="btn green" id="installPwaBtn" hidden>📲 Install Aplikasi (PWA)</button>
@@ -195,16 +195,8 @@
             <option value="micro_plugin">🚀 Micro-Plugin HTML5/Canvas Kustom</option>
           </select>
         </label>
-        <label class="field" id="egBuiltinGameWrap" style="display:none">Pilih Game Bawaan
-          <select id="egBuiltinGameId">
-            <option value="balance_scale">⚖️ Timbangan Angka (balance_scale)</option>
-            <option value="interactive_clock">🕒 Jam Analog Interaktif (interactive_clock)</option>
-            <option value="cashier_tray">💳 Meja Kasir Rupiah (cashier_tray)</option>
-            <option value="math_rocket">🚀 Roket Berhitung (math_rocket)</option>
-            <option value="science_lab">🔬 Lab Sains Anak (science_lab)</option>
-            <option value="word_phonics">🔤 Susun Kata &amp; Fonik (word_phonics)</option>
-            <option value="hijaiyah_quest">🕋 Petualangan Hijaiyah (hijaiyah_quest)</option>
-          </select>
+        <label class="field" id="egBuiltinGameWrap" style="display:none">Pilih 1 dari 45 Game Bawaan Microsite
+          <select id="egBuiltinGameId"></select>
         </label>
       </div>
 
@@ -260,11 +252,22 @@
   <!-- TAB 2: FLASHCARD 3D LESSON BUILDER -->
   <section id="tab-flashcard" class="panel hidden">
     <div class="subcard">
-      <strong style="color:#ffd460;font-size:14px">🧩 A. Informasi Pelajaran Flashcard 3D</strong>
-      <div class="grid-3">
+      <strong style="color:#ffd460;font-size:14px">🧩 A. Target Pelajaran Flashcard 3D (Sinkron 12 Pelajaran Microsite)</strong>
+      <div class="grid-2">
+        <label class="field">Mode Target Pelajaran
+          <select id="fcTargetMode">
+            <option value="builtin_deck">🔧 Tambah / Upgrade Kartu ke 12 Pelajaran Bawaan Microsite</option>
+            <option value="new_deck">➕ Buat Pelajaran Flashcard Baru (+ Tab Pelajaran Baru)</option>
+          </select>
+        </label>
+        <label class="field" id="fcBuiltinDeckWrap">Pilih 1 dari 12 Pelajaran Bawaan Microsite
+          <select id="fcBuiltinDeckId"></select>
+        </label>
+      </div>
+      <div id="fcNewDeckFields" class="grid-3" style="display:none">
         <label class="field">ID Pelajaran Unik<input type="text" id="fcDeckId" value="fc_mandarin_dasar"></label>
-        <label class="field">Judul Pelajaran (ID)<input type="text" id="fcTitleId" value="10 Kosakata Dasar Bahasa Asing"></label>
-        <label class="field">Judul Pelajaran (EN)<input type="text" id="fcTitleEn" value="10 Basic Vocabulary Flashcards"></label>
+        <label class="field">Judul Pelajaran (ID)<input type="text" id="fcTitleId" value="Kosakata Dasar Bahasa Asing"></label>
+        <label class="field">Judul Pelajaran (EN)<input type="text" id="fcTitleEn" value="Basic Vocabulary Flashcards"></label>
         <label class="field">Ikon Pelajaran<input type="text" id="fcIcon" value="🏮"></label>
         <label class="field">Kategori Pelajaran
           <select id="fcSubjectTab">
@@ -347,6 +350,71 @@
       if (p && Array.isArray(p.fcCards)) state.fcCards = p.fcCards;
     }
   } catch (e) {}
+
+
+  const WYPHA_BUILTIN_GAMES_45 = [{"id": "math_rocket", "tab": "math_coding", "icon": "🔢", "title": "Math Rocket: Hitung Cepat Ceria", "engine": "quiz_mcq"}, {"id": "clock_master", "tab": "math_coding", "icon": "⏰", "title": "Master Jam & Waktu (Clock & Time Master)", "engine": "quiz_mcq"}, {"id": "code_bot", "tab": "math_coding", "icon": "🤖", "title": "Robot Koding & Labirin Logika (Code-Bot Maze)", "engine": "quiz_mcq"}, {"id": "pattern_logic", "tab": "math_coding", "icon": "🧩", "title": "Logika Pola & Geometri Pintar", "engine": "quiz_mcq"}, {"id": "science_lab", "tab": "science", "icon": "🔬", "title": "Lab Sains Cilik (Little Scientist Lab)", "engine": "quiz_mcq"}, {"id": "memory_match", "tab": "science", "icon": "🧠", "title": "Memory Match: Sains & Alam Semesta", "engine": "memory_flip"}, {"id": "geo_explorer", "tab": "social_char", "icon": "🗺️", "title": "Jelajah Nusantara & Dunia (Geo & Culture Explorer)", "engine": "quiz_mcq"}, {"id": "eco_adab", "tab": "social_char", "icon": "🌱", "title": "Pahlawan Bumi & Karakter Baik (Eco & Adab Hero)", "engine": "quiz_mcq"}, {"id": "kids_finance", "tab": "social_char", "icon": "🪙", "title": "Celengan Cilik Pintar (Kids Mini Finance)", "engine": "quiz_mcq"}, {"id": "word_phonics", "tab": "lang_art", "icon": "🔤", "title": "Kata & Ejaan Dwibahasa (Word & Phonics)", "engine": "word_builder"}, {"id": "sentence_master", "tab": "lang_art", "icon": "📝", "title": "Susun Kalimat & Kata Lawan (Sentence & Antonym)", "engine": "quiz_mcq"}, {"id": "piano_melody", "tab": "lang_art", "icon": "🎹", "title": "Piano Nada & Memori Suara (Melody & Pitch Studio)", "engine": "quiz_mcq"}, {"id": "hijaiyah_quest", "tab": "mengaji_pai", "icon": "🕋", "title": "Petualangan Huruf Hijaiyah (Hijaiyah & Harakat Quest)", "engine": "quiz_mcq"}, {"id": "hijaiyah_builder", "tab": "mengaji_pai", "icon": "🔗", "title": "Puzzle Sambung Huruf Arab (Hijaiyah Word Builder)", "engine": "word_builder"}, {"id": "tajwid_detective", "tab": "mengaji_pai", "icon": "🎙️", "title": "Detektif Tajwid Cilik (Tajwid & Mad Master)", "engine": "quiz_mcq"}, {"id": "juz_amma_verse", "tab": "mengaji_pai", "icon": "🌟", "title": "Susun Ayat Juz Amma (Juz Amma Verse Sequencer)", "engine": "drag_sequence"}, {"id": "daily_dua", "tab": "mengaji_pai", "icon": "🤲", "title": "Hafalan Doa & Dzikir Harian (Daily Dua & Sunnah)", "engine": "quiz_mcq"}, {"id": "arabic_numbers", "tab": "mengaji_pai", "icon": "🌙", "title": "Angka Arab & Kalender Hijriah (Hijri & Numerals)", "engine": "quiz_mcq"}, {"id": "sirah_pillars", "tab": "mengaji_pai", "icon": "🕌", "title": "Jejak Nabi & Rukun Islam (Sirah & Pillars Quiz)", "engine": "quiz_mcq"}, {"id": "kasir_rupiah", "tab": "math_coding", "icon": "🛒", "title": "Kasir Cilik & Pecahan Rupiah (Mini Market Money Math)", "engine": "quiz_mcq"}, {"id": "fraction_pizza", "tab": "math_coding", "icon": "🍕", "title": "Master Pecahan & Pizza Visual (Visual Fractions & Decimals)", "engine": "quiz_mcq"}, {"id": "tangram_symmetry", "tab": "math_coding", "icon": "📐", "title": "Tangram, Simetri & Bangun Ruang (Spatial Geometry)", "engine": "quiz_mcq"}, {"id": "logic_detective", "tab": "math_coding", "icon": "🕵️", "title": "Detektif Logika & Sudoku Anak (Junior Logic Deduction)", "engine": "quiz_mcq"}, {"id": "human_body", "tab": "science", "icon": "🫀", "title": "Penjelajah Tubuh & Panca Indra (Human Body Explorer)", "engine": "quiz_mcq"}, {"id": "healthy_plate", "tab": "science", "icon": "🥗", "title": "Dokter Gizi & Isi Piringku (Nutrition & First Aid Hero)", "engine": "quiz_mcq"}, {"id": "earth_weather", "tab": "science", "icon": "🌋", "title": "Cuaca, Iklim & Siaga Bencana (Weather & Disaster Safety)", "engine": "quiz_mcq"}, {"id": "pancasila_hero", "tab": "social_char", "icon": "🦅", "title": "Duta Pancasila & Lambang Garuda (Pancasila & Civics)", "engine": "quiz_mcq"}, {"id": "safety_traffic", "tab": "social_char", "icon": "🚦", "title": "Polisi Cilik & Rambu Lalu Lintas (Traffic & Safety Hero)", "engine": "quiz_mcq"}, {"id": "emotion_empathy", "tab": "social_char", "icon": "💛", "title": "Detektif Emosi & Empati Sosial (Empathy & Kindness)", "engine": "quiz_mcq"}, {"id": "syllable_builder", "tab": "lang_art", "icon": "🧩", "title": "Susun Suku Kata & Lancar Baca (Syllable Reading Builder)", "engine": "word_builder"}, {"id": "english_convo", "tab": "lang_art", "icon": "🗣️", "title": "Percakapan Inggris Harian (Daily English Conversation)", "engine": "quiz_mcq"}, {"id": "color_art_studio", "tab": "lang_art", "icon": "🎨", "title": "Studio Campur Warna & Seni Budaya (Color Mixing & Art)", "engine": "quiz_mcq"}, {"id": "asmaul_husna", "tab": "mengaji_pai", "icon": "✨", "title": "Taman 99 Asmaul Husna (Asmaul Husna Meaning & Virtue)", "engine": "quiz_mcq"}, {"id": "akhlak_adab", "tab": "mengaji_pai", "icon": "🌸", "title": "Petualangan Adab & Akhlak Rasulullah (Prophetic Manners)", "engine": "quiz_mcq"}, {"id": "kisah_teladan", "tab": "mengaji_pai", "icon": "🐪", "title": "Kisah Teladan Al-Qur’an & Sahabat Nabi (Quranic Stories)", "engine": "quiz_mcq"}, {"id": "balance_scale", "tab": "math_coding", "icon": "⚖️", "title": "Jungkat-Jungkit Timbangan Angka (Balance Scale Physics)", "engine": "balance_scale"}, {"id": "interactive_clock", "tab": "math_coding", "icon": "🕰️", "title": "Putar Jarum Jam Interaktif (Interactive Clock Hands)", "engine": "interactive_clock"}, {"id": "cashier_tray", "tab": "math_coding", "icon": "🛍️", "title": "Meja Kasir & Kembalian Uang Nyata (Drag-and-Pay Cashier)", "engine": "cashier_tray"}, {"id": "circuit_lab", "tab": "science", "icon": "⚡", "title": "Sirkuit Listrik & Eksperimen Konduktor (Circuit Builder Lab)", "engine": "quiz_mcq"}, {"id": "eco_catcher", "tab": "science", "icon": "🗑️", "title": "Tangkap & Pilah Sampah Jatuh (Eco Catcher Sorter)", "engine": "quiz_mcq"}, {"id": "nusantara_map", "tab": "social_char", "icon": "🗾", "title": "Pasang Puzzle Peta Pulau Indonesia (Nusantara Map Snap)", "engine": "quiz_mcq"}, {"id": "rhythm_tap", "tab": "lang_art", "icon": "🥁", "title": "Studio Ketukan Ritme & Rebana (Rhythm Tap Studio)", "engine": "quiz_mcq"}, {"id": "word_search", "tab": "lang_art", "icon": "🔍", "title": "Kotak Cari Kata Dwibahasa (Bilingual Word Search Grid)", "engine": "quiz_mcq"}, {"id": "wudhu_simulator", "tab": "mengaji_pai", "icon": "💧", "title": "Simulasi Praktik Urutan Wudhu (Interactive Wudhu Flow)", "engine": "drag_sequence"}, {"id": "tajwid_catcher", "tab": "mengaji_pai", "icon": "🫧", "title": "Tangkap Gelembung Suara Hijaiyah & Tajwid (Sound Bubble Catcher)", "engine": "quiz_mcq"}];
+  const WYPHA_BUILTIN_DECKS_12 = [{"id": "fc_abjad_az", "tab": "bahasa_baca", "icon": "🔤", "title": "1. Mengenal Huruf Abjad A–Z & 100 Kosakata Benda (100 Kartu)"}, {"id": "fc_suku_kata", "tab": "bahasa_baca", "icon": "🗣️", "title": "2. Belajar Membaca 100 Suku Kata Tanpa Mengeja (100 Kartu)"}, {"id": "fc_anggota_tubuh", "tab": "bahasa_baca", "icon": "🫀", "title": "3. 100 Kosakata Anggota Tubuh, Panca Indra & Hidup Sehat (100 Kartu)"}, {"id": "fc_english_daily", "tab": "bahasa_baca", "icon": "🇬🇧", "title": "4. 100 Kartu Percakapan & Kosakata Bahasa Inggris Harian (Native EN)"}, {"id": "fc_angka_hitung", "tab": "angka_logika", "icon": "🔢", "title": "5. Mengenal Angka 1–100 & Hitung Benda Sentuh Interaktif (100 Kartu)"}, {"id": "fc_warna_bentuk", "tab": "angka_logika", "icon": "🎨", "title": "6. 100 Kosakata Warna, Bentuk Geometri, Ukuran & Pola (100 Kartu)"}, {"id": "fc_hewan_alam", "tab": "dunia_sains", "icon": "🦁", "title": "7. 100 Kosakata Hewan, Suara & Alam Sekitar (100 Kartu)"}, {"id": "fc_buah_sayur", "tab": "dunia_sains", "icon": "🍎", "title": "8. 100 Kosakata Buah, Sayur & Makanan Bergizi (100 Kartu)"}, {"id": "fc_transportasi_profesi", "tab": "dunia_sains", "icon": "🚒", "title": "9. 100 Kosakata Kendaraan, Tempat Umum & Profesi (100 Kartu)"}, {"id": "fc_sains_antariksa", "tab": "dunia_sains", "icon": "🪐", "title": "10. 100 Kartu Pintar Tata Surya, Antariksa & Sains Alam (100 Kartu)"}, {"id": "fc_hijaiyah_harakat", "tab": "mengaji_doa", "icon": "🕋", "title": "11. 100 Kartu Huruf Hijaiyah, Harakat, Tanwin & Mad (Native AR)"}, {"id": "fc_doa_adab_harian", "tab": "mengaji_doa", "icon": "🤲", "title": "12. 100 Kartu Doa Harian, Dzikir, Asmaul Husna & Adab (Native AR)"}];
+  const TAB_LABELS = {
+    math_coding: "🔢 Matematika & Koding",
+    science: "🔬 IPA & Sains",
+    social_char: "🗺️ IPS & Karakter",
+    lang_art: "🔤 Bahasa & Seni",
+    mengaji_pai: "🕌 Mengaji & PAI"
+  };
+  const FC_TAB_LABELS = {
+    bahasa_baca: "🔤 Baca & Bahasa",
+    angka_logika: "🔢 Angka & Logika",
+    dunia_sains: "🌍 Hewan, Buah & Sains",
+    mengaji_doa: "🕌 Mengaji & Doa"
+  };
+
+  const populateCatalogSelects = () => {
+    const gSel = $("egBuiltinGameId");
+    if (gSel) {
+      gSel.innerHTML = "";
+      Object.entries(TAB_LABELS).forEach(([tabKey, tabName]) => {
+        const og = document.createElement("optgroup");
+        og.label = tabName;
+        WYPHA_BUILTIN_GAMES_45.filter(g => g.tab === tabKey).forEach((g, i) => {
+          const opt = document.createElement("option");
+          opt.value = g.id;
+          opt.textContent = `${g.icon} ${g.title} [${g.engine}]`;
+          og.appendChild(opt);
+        });
+        gSel.appendChild(og);
+      });
+      gSel.onchange = () => {
+        const found = WYPHA_BUILTIN_GAMES_45.find(x => x.id === gSel.value);
+        if (found && $("egEngineType")) {
+          $("egEngineType").value = found.engine;
+          renderDynamicEngineForm();
+          showStatus("🎯 Mesin game otomatis disinkronkan ke: " + found.engine + " (" + found.title + ")");
+        }
+      };
+    }
+    const dSel = $("fcBuiltinDeckId");
+    if (dSel) {
+      dSel.innerHTML = "";
+      Object.entries(FC_TAB_LABELS).forEach(([tabKey, tabName]) => {
+        const og = document.createElement("optgroup");
+        og.label = tabName;
+        WYPHA_BUILTIN_DECKS_12.filter(d => d.tab === tabKey).forEach(d => {
+          const opt = document.createElement("option");
+          opt.value = d.id;
+          opt.textContent = `${d.icon} ${d.title}`;
+          og.appendChild(opt);
+        });
+        dSel.appendChild(og);
+      });
+    }
+  };
+  populateCatalogSelects();
+
+  $("fcTargetMode").onchange = () => {
+    const isBuiltin = $("fcTargetMode").value === "builtin_deck";
+    $("fcBuiltinDeckWrap").style.display = isBuiltin ? "grid" : "none";
+    $("fcNewDeckFields").style.display = isBuiltin ? "none" : "grid";
+  };
 
   const saveDraft = () => {
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
@@ -615,6 +683,31 @@
     const expType = $('exportTypeSelect').value;
     const packTitle = $('packTitleInput').value.trim() || 'Paket Ekspansi WYPHA V41';
     if (expType === 'flashcard') {
+      if ($('fcTargetMode')?.value === 'builtin_deck') {
+        const targetDeckId = $('fcBuiltinDeckId')?.value || 'fc_abjad_az';
+        return {
+          schema: 'wypha-learn-pack/v1',
+          packId: 'learn-upgrade-' + Date.now(),
+          packTitle,
+          unlockDeckIds: [targetDeckId],
+          cards: state.fcCards.map((c, i) => ({
+            id: targetDeckId + '-upg-' + Date.now() + '-' + (i + 1),
+            deckId: targetDeckId,
+            symbol: c.symbol,
+            visual: c.visual,
+            wordId: c.wordId,
+            wordEn: c.wordEn,
+            syllable: c.syllable,
+            exampleId: c.exampleId,
+            exampleEn: c.exampleEn,
+            speechAr: c.speechAr || undefined,
+            speechId: c.wordId + '. ' + c.exampleId,
+            speechEn: c.wordEn + '. ' + c.exampleEn,
+            phonicsId: c.wordId,
+            phonicsEn: c.wordEn
+          }))
+        };
+      }
       const isCustTab = $('fcSubjectTab').value === 'custom_fc_tab';
       const customLbl = $('fcCustomTabLabel').value.trim() || 'Pelajaran Tambahan';
       const subjTab = isCustTab ? customLbl.toLowerCase().replace(/[^a-z0-9]+/g, '_') : $('fcSubjectTab').value;
